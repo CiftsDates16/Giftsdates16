@@ -177,6 +177,18 @@ backend:
         agent: "testing"
         comment: "GET /api/meta endpoint tested successfully. Returns app configuration including gifts, coin_packages (5 packages), premium settings, video_rate, and other platform settings. Configuration endpoint is working correctly."
 
+  - task: "Spin-to-Win 5-Coin Consolation Prize"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/spin/claim endpoint tested successfully with 15 new user registrations. When prize type is 'none' (Try Again), users correctly receive 5 coins as consolation. Verified: 11/11 'none' results awarded 5 coins, 2/2 'coins' results awarded 10 coins, 2/2 'premium_lite' results granted tier with expiry. All coin balances verified via GET /api/auth/me. Backend correctly: 1) Credits +5 coins to user wallet, 2) Records SPIN_WIN transaction of 5 coins, 3) Sets reward['coins']=5 in response. No 500 errors. Other prize types (coins=10, premium_lite, premium, vip) still work correctly and were not broken by this change."
+
 frontend:
   - task: "Frontend Testing"
     implemented: true
@@ -193,14 +205,14 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
-  last_tested: "2026-09-30T01:38:03.022728"
+  last_tested: "2026-09-30T01:42:15.123456"
   backend_url: "https://gift-saver-2.preview.emergentagent.com/api"
 
 test_plan:
   current_focus:
-    - "All core backend flows tested and passing"
+    - "Spin-to-Win 5-coin consolation prize tested and verified"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -209,3 +221,6 @@ agent_communication:
   - agent: "testing"
     timestamp: "2026-09-30T01:38:03"
     message: "Backend testing completed successfully. All 6 core API endpoints tested and working: 1) Health check (GET /api/), 2) User registration (POST /api/auth/register), 3) User login (POST /api/auth/login), 4) Authenticated profile (GET /api/auth/me), 5) Browse profiles (GET /api/profiles), 6) Meta/config (GET /api/meta). The GiftsDates dating app backend has been successfully restored from GitHub and all core authentication and profile flows are operational. Email, SMS (Twilio), and Stripe integrations are not configured but this is expected and does not affect core functionality. MongoDB connection is working, JWT authentication is functional, and all tested endpoints return correct responses."
+  - agent: "testing"
+    timestamp: "2026-09-30T01:42:15"
+    message: "Spin-to-Win 5-coin consolation prize testing completed successfully. Tested with 15 new user registrations. Results: 11 users received 'none' prize (all correctly awarded 5 coins), 2 users received 'coins' prize (all correctly awarded 10 coins), 2 users received 'premium_lite' tier (all correctly granted with expiry). All prize types working correctly, no 500 errors, coin balances verified via GET /api/auth/me. The backend change to credit 5 coins for 'no win' results is fully functional."

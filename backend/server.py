@@ -4121,8 +4121,10 @@ async def spin_claim(user=Depends(get_current_user)):
         upd[field] = expires_at
         await db.users.update_one({"id": user["id"]}, {"$set": upd})
         reward["expires_at"] = expires_at
-    else:  # "none" — no win
-        await db.users.update_one({"id": user["id"]}, {"$set": upd})
+    else:  # "none" — no jackpot: credit 5 coins as a thank-you/compensation
+        await db.users.update_one({"id": user["id"]}, {"$inc": {"coins": 5}, "$set": upd})
+        await record_txn(user["id"], "SPIN_WIN", 5, None, "Welcome Spin — consolation coins")
+        reward["coins"] = 5
     await db.spin_history.insert_one({"id": str(uuid.uuid4()), "user_id": user["id"], "reward": reward,
                                       "spin_date": _iso(), "status": "completed", "created_at": _iso()})
     return {"prize": reward}

@@ -130,7 +130,10 @@ export const SpinWheel = ({ open, onClose, userName }) => {
         setDone(true);
         setSpinning(false);
         setDramatic(false);
-        if (p.type && p.type !== "none") {
+        if (p.type === "none") {
+          fireConfetti("coins");
+          playWinChime(audioRef.current, "coins");
+        } else if (p.type) {
           fireConfetti(p.type);
           playWinChime(audioRef.current, p.type);
           // VIP gets a second golden shower for extra drama.
@@ -169,16 +172,17 @@ export const SpinWheel = ({ open, onClose, userName }) => {
     if (TIER_NAME[result.type]) {
       return `Congratulations${first ? ", " + first : ""}! You won a 7-day ${TIER_NAME[result.type]} account!`;
     }
-    return `Welcome to GiftsDates${first ? ", " + first : ""}! Explore profiles, send gifts and start connecting.`;
+    return `Welcome to GiftsDates${first ? ", " + first : ""}! Here are 5 Coins to get you started — added to your wallet.`;
   };
 
   const ResultIcon = result?.type === "coins" ? Coins
     : result?.type === "vip" ? Crown
     : result?.type === "premium" ? Crown
     : result?.type === "premium_lite" ? Sparkles
+    : result?.type === "none" ? Coins
     : PartyPopper;
 
-  const isWin = result && result.type !== "none";
+  const isWin = result && (result.type !== "none" || result.coins);
   const bigWin = result && result.type === "vip";
 
   return (

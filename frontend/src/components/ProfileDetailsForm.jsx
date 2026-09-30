@@ -3,10 +3,11 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import ChipMultiSelect from "./ChipMultiSelect";
+import MultiSelect from "./MultiSelect";
 import { LANGUAGES, t } from "../lib/i18n";
 
 export const INTENTS = ["serious", "marriage", "casual", "just_sex", "friendship", "travel", "sponsor", "giftsdates"];
-export const INCOMES = ["low", "mid", "high", "vip", "custom", "prefer_not"];
+export const INCOMES = ["custom", "prefer_not"];
 export const KIDS = ["none", "have", "want", "no_want"];
 export const HABITS = ["never", "sometimes", "often"];
 export const RELIGIONS = ["christian", "muslim", "jewish", "buddhist", "hindu", "spiritual", "atheist", "other", "prefer_not"];
@@ -20,7 +21,7 @@ export const genderLabel = (g, lang) => t(g, lang);
 export const optLabel = (field, v, lang) => {
   if (!v) return "";
   if (v === "prefer_not") return t("prefer_not", lang);
-  if (field === "income" && v === "custom") return t("income_custom", lang);
+  if (field === "income" && v === "custom") return `${t("income_custom_value", lang)} ($/month)`;
   if (field === "gender") return t(v, lang);
   const prefix = { relationship_intent: "intent_", income: "income_", kids: "kids_", smoking: "habit_", drinking: "habit_", religion: "rel_", penis_size: "size_", orientation: "or_" }[field];
   return prefix ? t(prefix + v, lang) : v;
@@ -44,10 +45,6 @@ export function Sel({ testid, field, value, options, onChange, lang }) {
 
 export default function ProfileDetailsForm({ f, setF, lang, gender }) {
   const set = (k) => (v) => setF({ ...f, [k]: v });
-  const toggleLang = (code) => {
-    const cur = f.languages_spoken || [];
-    set("languages_spoken")(cur.includes(code) ? cur.filter(c => c !== code) : [...cur, code]);
-  };
   const intents = Array.isArray(f.relationship_intent) ? f.relationship_intent : (f.relationship_intent ? [f.relationship_intent] : []);
   const toggleIntent = (v) => {
     set("relationship_intent")(intents.includes(v) ? intents.filter(x => x !== v) : [...intents, v]);
@@ -77,19 +74,25 @@ export default function ProfileDetailsForm({ f, setF, lang, gender }) {
           <Field label={t("job_title", lang)}><Input data-testid="profile-job-input" value={f.job_title || ""} onChange={e => set("job_title")(e.target.value)} className="bg-white/5 border-white/10 mt-1" /></Field>
           <Field label={t("height", lang)}><Input data-testid="profile-height-input" type="number" min="100" max="250" value={f.height || ""} onChange={e => set("height")(e.target.value ? parseInt(e.target.value) : null)} className="bg-white/5 border-white/10 mt-1" /></Field>
           <Field label={t("weight", lang)}><Input data-testid="profile-weight-input" type="number" min="30" max="300" value={f.weight || ""} onChange={e => set("weight")(e.target.value ? parseInt(e.target.value) : null)} className="bg-white/5 border-white/10 mt-1" /></Field>
-          <Field label={t("income", lang)}><Sel testid="profile-income-select" field="income" value={f.income} options={INCOMES} onChange={set("income")} lang={lang} /></Field>
-          {f.income === "custom" && <Field label={t("income_custom_value", lang)}><Input data-testid="profile-income-custom-input" value={f.income_custom || ""} onChange={e => set("income_custom")(e.target.value)} placeholder="$7,500 / mo" className="bg-white/5 border-white/10 mt-1" /></Field>}
+          <Field label={`${t("income", lang)} $/month`}><Sel testid="profile-income-select" field="income" value={f.income} options={INCOMES} onChange={set("income")} lang={lang} /></Field>
+          {f.income === "custom" && <Field label={`${t("income_custom_value", lang)} ($/month)`}><Input data-testid="profile-income-custom-input" inputMode="decimal" value={f.income_custom || ""} onChange={e => set("income_custom")(e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1"))} placeholder="e.g. 7500" className="bg-white/5 border-white/10 mt-1 font-mono-num" /></Field>}
           <Field label={t("religion", lang)}><Sel testid="profile-religion-select" field="religion" value={f.religion} options={RELIGIONS} onChange={set("religion")} lang={lang} /></Field>
         </div>
         <Field label={`${t("hobbies", lang)} (${t("comma_separated", lang)})`}>
           <Input data-testid="profile-hobbies-input" value={(f.hobbies || []).join(", ")} onChange={e => set("hobbies")(e.target.value.split(",").map(s => s.trim()).filter(Boolean))} placeholder="Yoga, Travel, Wine" className="bg-white/5 border-white/10 mt-1" />
         </Field>
         <Field label={t("languages_spoken", lang)}>
-          <div className="flex flex-wrap gap-2 mt-2" data-testid="profile-languages-chips">
-            {LANGUAGES.map(l => {
-              const on = (f.languages_spoken || []).includes(l.code);
-              return <button type="button" key={l.code} data-testid={`profile-lang-chip-${l.code}`} onClick={() => toggleLang(l.code)} className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${on ? "bg-rose-500/20 border-rose-500/50 text-rose-200" : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"}`}>{l.flag} {l.name}</button>;
-            })}
+          <div className="mt-1">
+            <MultiSelect
+              testid="profile-languages-select"
+              accent="rose"
+              value={f.languages_spoken || []}
+              onChange={(codes) => set("languages_spoken")(codes)}
+              options={LANGUAGES.map(l => ({ value: l.code, label: `${l.flag} ${l.name}` }))}
+              placeholder={t("languages_spoken", lang)}
+              searchPlaceholder={t("search", lang)}
+              emptyText={t("no_results", lang)}
+            />
           </div>
         </Field>
       </div>

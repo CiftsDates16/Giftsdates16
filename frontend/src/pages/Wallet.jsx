@@ -11,7 +11,6 @@ import { Coins, Lock, Wallet as WalletIcon, Crown, ArrowUpRight, ArrowDownRight,
 import { toast } from "sonner";
 import PayoutAccountCard from "../components/PayoutAccountCard";
 import PayoutStatusTracker from "../components/PayoutStatusTracker";
-import ReferralCard from "../components/ReferralCard";
 
 export default function Wallet() {
   const { user, lang, meta, refreshUser, spinEligible } = useApp();
@@ -103,7 +102,6 @@ export default function Wallet() {
         <div id="payout-account-section" className="scroll-mt-24">
           <PayoutAccountCard key={wallet.payout_account?.submitted_at || "new"} account={wallet.payout_account} onSaved={load} />
         </div>
-        <ReferralCard />
 
         <div className="glass rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">

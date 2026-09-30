@@ -248,8 +248,6 @@ export default function Auth() {
                   <span className="font-semibold text-slate-100">Allow text notifications</span> — get date reminders, matches and messages by SMS.
                 </span>
               </label>
-              <div><Label className="text-xs text-slate-400">{t("referral_optional", lang)}</Label>
-                <Input data-testid="auth-referral-input" value={f.referral_code} onChange={e => setF({ ...f, referral_code: e.target.value.toUpperCase() })} className="bg-white/5 border-white/10 mt-1 font-mono" /></div>
               <label className="flex items-start gap-2.5 pt-1 cursor-pointer" data-testid="auth-consent-label">
                 <input data-testid="auth-consent-checkbox" type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 accent-rose-500 shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">

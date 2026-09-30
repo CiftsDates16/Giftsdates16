@@ -147,29 +147,6 @@ export default function ProfileView() {
 
             {p.bio && <div className="glass rounded-2xl p-5"><h3 className="font-serif-luxe text-xl mb-2">{t("about_me", lang)}</h3><p className="text-sm text-slate-300 whitespace-pre-line" data-testid="profile-view-bio">{p.bio}</p></div>}
 
-            {p.approx_lat != null && p.approx_lng != null && (
-              <div className="glass rounded-2xl p-5" data-testid="profile-view-map">
-                <h3 className="font-serif-luxe text-xl mb-3 flex items-center gap-2"><MapPin size={18} className="text-sky-300" /> {t("map_approx_area", lang)}</h3>
-                <div className="rounded-xl overflow-hidden border border-white/10 relative">
-                  <iframe
-                    title="approx-area"
-                    data-testid="profile-view-map-iframe"
-                    className="w-full h-56 grayscale-[0.15] contrast-110"
-                    loading="lazy"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${p.approx_lng - 0.35}%2C${p.approx_lat - 0.22}%2C${p.approx_lng + 0.35}%2C${p.approx_lat + 0.22}&layer=mapnik&marker=${p.approx_lat}%2C${p.approx_lng}`}
-                  />
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span data-testid="profile-view-map-radius" className="block rounded-full bg-sky-400/15 border-2 border-sky-400/50 shadow-[0_0_30px_-4px_rgba(56,189,248,0.6)]" style={{ height: "46%", aspectRatio: "1 / 1" }} />
-                    <span className="absolute w-2.5 h-2.5 rounded-full bg-sky-400 border border-white/70 shadow" />
-                  </div>
-                </div>
-                <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
-                  <MapPin size={11} /> {p.city}, {p.country}
-                  {p.distance_km != null && <span className="text-sky-300">· {formatDistance(p.distance_km, t, lang)}</span>}
-                </p>
-              </div>
-            )}
-
             {p.gifts_count > 0 && (
               <div className="glass rounded-2xl p-5" data-testid="profile-view-top-givers">
                 <div className="flex items-center justify-between mb-3">
@@ -199,7 +176,7 @@ export default function ProfileView() {
               <Row label={t("job_title", lang)} value={p.job_title} testid="pv-job" />
               <Row label={t("height", lang)} value={p.height && `${p.height} cm`} testid="pv-height" />
               <Row label={t("weight", lang)} value={p.weight && `${p.weight} kg`} testid="pv-weight" />
-              <Row label={t("income", lang)} value={p.income === "custom" ? p.income_custom : optLabel("income", p.income, lang)} testid="pv-income" />
+              <Row label={`${t("income", lang)} $/month`} value={p.income === "custom" ? (p.income_custom ? `$${p.income_custom} / month` : "") : optLabel("income", p.income, lang)} testid="pv-income" />
               <Row label={t("religion", lang)} value={optLabel("religion", p.religion, lang)} testid="pv-religion" />
               <Row label={t("languages_spoken", lang)} value={langNames} testid="pv-langs" />
               {p.hobbies?.length > 0 && <div className="pt-3"><div className="text-xs text-slate-400 mb-2">{t("hobbies", lang)}</div><div className="flex flex-wrap gap-1.5" data-testid="pv-hobbies">{p.hobbies.map(h => <span key={h} className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs">{h}</span>)}</div></div>}
