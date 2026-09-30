@@ -189,6 +189,18 @@ backend:
         agent: "testing"
         comment: "POST /api/spin/claim endpoint tested successfully with 15 new user registrations. When prize type is 'none' (Try Again), users correctly receive 5 coins as consolation. Verified: 11/11 'none' results awarded 5 coins, 2/2 'coins' results awarded 10 coins, 2/2 'premium_lite' results granted tier with expiry. All coin balances verified via GET /api/auth/me. Backend correctly: 1) Credits +5 coins to user wallet, 2) Records SPIN_WIN transaction of 5 coins, 3) Sets reward['coins']=5 in response. No 500 errors. Other prize types (coins=10, premium_lite, premium, vip) still work correctly and were not broken by this change."
 
+  - task: "VIP Booking Data Structure Investigation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Investigated VIP date booking data structure in GET /api/dates response. CONFIRMED: VIP bookings (POST /api/vip/book) include 'vip': true (boolean) in the response, while regular bookings (POST /api/dates/book) COMPLETELY OMIT the vip field. Tested with 2 new users, created both VIP and regular bookings, verified data structure in both outgoing and incoming arrays. Frontend filter !b.vip will correctly separate bookings: VIP bookings (vip=true) are EXCLUDED, regular bookings (vip=undefined) are INCLUDED. Code analysis confirmed: Line 2716 sets vip:True for VIP bookings, lines 2038-2043 omit vip field for regular bookings. Full investigation report saved to /app/VIP_BOOKING_INVESTIGATION_REPORT.md. Test users: 47f1660b-2d31-49ca-8041-225cc7434d94 (Charlie Booker), cdb2b056-8b84-4a96-97ad-2bc23269d47d (Diana Recipient). Test bookings: VIP=42dfd162-ecc4-41be-9dbd-bb515e61e532, Regular=d43cf3f9-90eb-4d53-8c98-7d4d5f59cea4."
+
 frontend:
   - task: "Frontend Testing"
     implemented: true
@@ -205,14 +217,14 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
-  last_tested: "2026-09-30T01:42:15.123456"
+  last_tested: "2026-09-30T02:15:00.000000"
   backend_url: "https://gift-saver-2.preview.emergentagent.com/api"
 
 test_plan:
   current_focus:
-    - "Spin-to-Win 5-coin consolation prize tested and verified"
+    - "VIP booking data structure investigation completed and verified"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -224,3 +236,7 @@ agent_communication:
   - agent: "testing"
     timestamp: "2026-09-30T01:42:15"
     message: "Spin-to-Win 5-coin consolation prize testing completed successfully. Tested with 15 new user registrations. Results: 11 users received 'none' prize (all correctly awarded 5 coins), 2 users received 'coins' prize (all correctly awarded 10 coins), 2 users received 'premium_lite' tier (all correctly granted with expiry). All prize types working correctly, no 500 errors, coin balances verified via GET /api/auth/me. The backend change to credit 5 coins for 'no win' results is fully functional."
+  - agent: "testing"
+    timestamp: "2026-09-30T02:15:00"
+    message: "VIP booking data structure investigation completed. KEY FINDINGS: 1) VIP bookings (POST /api/vip/book) include 'vip': true (boolean) in GET /api/dates response. 2) Regular bookings (POST /api/dates/book) COMPLETELY OMIT the vip field (not false, just missing). 3) Frontend filter !b.vip correctly separates them: VIP bookings excluded (vip=true evaluates to false), regular bookings included (vip=undefined evaluates to true). 4) Code verified at lines 2716 (VIP sets vip:True) and 2038-2043 (regular omits vip field). 5) Tested with 2 new users, created both booking types, verified in both outgoing/incoming arrays. Full report: /app/VIP_BOOKING_INVESTIGATION_REPORT.md. No changes needed - implementation is correct."
+
