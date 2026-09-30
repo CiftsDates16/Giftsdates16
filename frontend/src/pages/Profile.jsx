@@ -14,7 +14,6 @@ import PhotoGrid from "../components/PhotoGrid";
 import ProfileDetailsForm from "../components/ProfileDetailsForm";
 import AvailabilityCalendar from "../components/AvailabilityCalendar";
 import VipEditor from "../components/VipEditor";
-import CancelledDates from "../components/CancelledDates";
 import CountrySelect from "../components/CountrySelect";
 import CitySelect from "../components/CitySelect";
 import DeleteAccountModal from "../components/DeleteAccountModal";
@@ -207,8 +206,6 @@ export default function Profile() {
         </div>
 
         <VipEditor />
-
-        <CancelledDates />
 
         <div className="glass rounded-2xl p-6 mt-6 space-y-4">
           <h3 className="font-serif-luxe text-xl gold-text">{t("account", lang)}</h3>
