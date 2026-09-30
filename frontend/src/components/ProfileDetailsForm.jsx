@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import ChipMultiSelect from "./ChipMultiSelect";
 import MultiSelect from "./MultiSelect";
 import { LANGUAGES, t } from "../lib/i18n";
+import { HOBBY_SELECT_GROUPS, HOBBY_MAX } from "../lib/hobbies";
+import { toast } from "sonner";
 
 export const INTENTS = ["serious", "marriage", "casual", "just_sex", "friendship", "travel", "sponsor", "giftsdates"];
 export const INCOMES = ["custom", "prefer_not"];
@@ -78,8 +80,26 @@ export default function ProfileDetailsForm({ f, setF, lang, gender }) {
           {f.income === "custom" && <Field label={`${t("income_custom_value", lang)} ($/month)`}><Input data-testid="profile-income-custom-input" inputMode="decimal" value={f.income_custom || ""} onChange={e => set("income_custom")(e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1"))} placeholder="e.g. 7500" className="bg-white/5 border-white/10 mt-1 font-mono-num" /></Field>}
           <Field label={t("religion", lang)}><Sel testid="profile-religion-select" field="religion" value={f.religion} options={RELIGIONS} onChange={set("religion")} lang={lang} /></Field>
         </div>
-        <Field label={`${t("hobbies", lang)} (${t("comma_separated", lang)})`}>
-          <Input data-testid="profile-hobbies-input" value={(f.hobbies || []).join(", ")} onChange={e => set("hobbies")(e.target.value.split(",").map(s => s.trim()).filter(Boolean))} placeholder="Yoga, Travel, Wine" className="bg-white/5 border-white/10 mt-1" />
+        <Field label={`${t("hobbies", lang)} (max ${HOBBY_MAX})`}>
+          <div className="mt-1">
+            <MultiSelect
+              testid="profile-hobbies-select"
+              accent="rose"
+              value={f.hobbies || []}
+              onChange={(vals) => {
+                if (vals.length > HOBBY_MAX) {
+                  toast.error(`You can choose up to ${HOBBY_MAX} hobbies.`);
+                  return;
+                }
+                set("hobbies")(vals);
+              }}
+              groups={HOBBY_SELECT_GROUPS}
+              placeholder={t("hobbies", lang)}
+              searchPlaceholder={t("search", lang)}
+              emptyText={t("no_results", lang)}
+            />
+            <p className="text-[11px] text-slate-500 mt-1.5">{(f.hobbies || []).length}/{HOBBY_MAX} selected</p>
+          </div>
         </Field>
         <Field label={t("languages_spoken", lang)}>
           <div className="mt-1">
