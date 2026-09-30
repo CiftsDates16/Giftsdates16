@@ -10,6 +10,7 @@ import { useApp } from "../context/AppContext";
 import VipScheduleManager from "../components/VipScheduleManager";
 import VipScheduleBookModal from "../components/VipScheduleBookModal";
 import DateBookingList from "../components/DateBookingList";
+import CancelledDates from "../components/CancelledDates";
 
 const fmtDay = (d) => { try { const [y, m, dd] = d.split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }); } catch { return d; } };
 
@@ -210,6 +211,10 @@ export default function VipBookings() {
           onDone={() => { setReschedule(null); load(); }}
         />
       )}
+
+      <div className="mt-8">
+        <CancelledDates />
+      </div>
     </div>
   );
 }
