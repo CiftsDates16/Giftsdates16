@@ -67,16 +67,16 @@ export default function VipSection({ userId, name, preview }) {
           <p className="text-xs text-slate-300 mt-1 max-w-xs">{t("vip_unlock_note", lang)}</p>
           {data.can_unlock ? (
             <div className="flex flex-col items-center gap-2 mt-3 w-full max-w-xs">
-              <Button data-testid="vip-unlock-one-cta" onClick={unlockSection} disabled={unlocking} className="rose-btn text-white border-0 w-full">
-                {t("vip_unlock_one", lang)} · 🪙 {data.unlock_price || 100}
+              <Button data-testid="vip-buy-vip-cta" onClick={() => nav("/wallet?premium=1")} className="rose-btn text-white border-0 w-full">
+                <Crown size={16} className="me-2" /> {t("vip_buy_vip", lang)}
               </Button>
               <span className="text-[11px] text-slate-400 uppercase tracking-wide">{t("vip_unlock_or", lang)}</span>
-              <Button data-testid="vip-unlock-cta" variant="outline" onClick={() => nav("/wallet?premium=1")} className="w-full bg-white/5 border-amber-500/40 text-amber-200 hover:bg-amber-500/10 hover:text-amber-100">
-                {t("vip_get_unlimited", lang)}
+              <Button data-testid="vip-unlock-one-cta" variant="outline" onClick={unlockSection} disabled={unlocking} className="w-full bg-white/5 border-amber-500/40 text-amber-200 hover:bg-amber-500/10 hover:text-amber-100">
+                {t("vip_unlock_coins", lang).replace("{n}", data.unlock_price || 100)} 🪙
               </Button>
             </div>
           ) : (
-            <Button data-testid="vip-unlock-cta" onClick={() => nav("/wallet?premium=1")} className="rose-btn text-white border-0 mt-3">{t("vip_unlock_btn", lang)}</Button>
+            <Button data-testid="vip-unlock-cta" onClick={() => nav("/wallet?premium=1")} className="rose-btn text-white border-0 mt-3">{t("vip_buy_vip", lang)}</Button>
           )}
         </div>
       </div>
