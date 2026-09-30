@@ -9,6 +9,7 @@ import { api } from "../lib/api";
 import { useApp } from "../context/AppContext";
 import VipScheduleManager from "../components/VipScheduleManager";
 import VipScheduleBookModal from "../components/VipScheduleBookModal";
+import DateBookingList from "../components/DateBookingList";
 
 const fmtDay = (d) => { try { const [y, m, dd] = d.split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }); } catch { return d; } };
 
@@ -137,6 +138,11 @@ export default function VipBookings() {
         {pending.length > 0 && <Badge className="bg-rose-500 text-white border-0 rounded-full" data-testid="vs-pending-badge">🔔 {pending.length}</Badge>}
       </div>
       <p className="text-sm text-slate-400 mb-6">Control your availability and manage every date request in one place.</p>
+
+      <section className="mb-8" data-testid="vip-escrow-dates">
+        <h2 className="font-serif-luxe text-xl mb-3 flex items-center gap-2"><Crown size={18} className="text-amber-300" /> VIP Dates</h2>
+        <DateBookingList mode="vip" />
+      </section>
 
       {isVip ? (
         <Tabs defaultValue="requests" className="w-full">
