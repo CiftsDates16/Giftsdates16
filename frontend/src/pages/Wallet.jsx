@@ -217,9 +217,10 @@ export default function Wallet() {
 
       {/* Premium dialog */}
       <Dialog open={premOpen} onOpenChange={setPremOpen}>
-        <DialogContent className="bg-[#161320] border-white/10 text-white max-w-md">
+        <DialogContent className="bg-[#161320] border-white/10 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle className="font-serif-luxe text-2xl">{t("buy_premium", lang)}</DialogTitle></DialogHeader>
-          <div className="glass rounded-xl p-5 text-center space-y-3 border border-sky-500/40" data-testid="premium-lite-purchase-card">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
+          <div className="glass rounded-xl p-5 text-center space-y-3 border border-sky-500/40 flex flex-col" data-testid="premium-lite-purchase-card">
             <Crown size={40} className="mx-auto text-sky-400 fill-sky-500"/>
             <div className="font-serif-luxe text-2xl text-sky-200">{t("premium_lite", lang)} · ${meta?.premium_lite?.amount || 14.99}<span className="text-sm text-slate-400"> {t("per_month", lang)}</span></div>
             <ul className="text-sm text-slate-300 text-left space-y-1">
@@ -229,10 +230,12 @@ export default function Wallet() {
               <li>✓ {t("perk_premium_placement", lang)}</li>
               <li className="text-slate-500">✗ {t("perk_no_vip_content", lang)}</li>
             </ul>
-            <Button data-testid="premium-lite-subscribe-confirm" onClick={() => buy("premium_lite_monthly")} className="w-full h-11 bg-sky-600 hover:bg-sky-500 text-white border-0">{t("buy_premium_lite", lang)} · ${meta?.premium_lite?.amount || 14.99}</Button>
-            <Button data-testid="premium-lite-buy-coins" onClick={() => buyCoins("premium_lite")} variant="outline" className="w-full bg-sky-500/10 border-sky-500/40 text-sky-200 h-10">🪙 {meta?.premium_lite_coins || 150}</Button>
+            <div className="mt-auto space-y-3 pt-2">
+              <Button data-testid="premium-lite-subscribe-confirm" onClick={() => buy("premium_lite_monthly")} className="w-full h-11 bg-sky-600 hover:bg-sky-500 text-white border-0">{t("buy_premium_lite", lang)} · ${meta?.premium_lite?.amount || 14.99}</Button>
+              <Button data-testid="premium-lite-buy-coins" onClick={() => buyCoins("premium_lite")} variant="outline" className="w-full bg-sky-500/10 border-sky-500/40 text-sky-200 h-10">🪙 {meta?.premium_lite_coins || 150}</Button>
+            </div>
           </div>
-          <div className="glass rounded-xl p-5 text-center space-y-3 border border-amber-500/40 mt-3">
+          <div className="glass rounded-xl p-5 text-center space-y-3 border border-amber-500/40 flex flex-col">
             <Crown size={40} className="mx-auto text-amber-300"/>
             <div className="font-serif-luxe text-2xl">{t("premium", lang)} · ${meta?.premium?.amount}<span className="text-sm text-slate-400"> {t("per_month", lang)}</span></div>
             <ul className="text-sm text-slate-300 text-left space-y-1">
@@ -243,11 +246,13 @@ export default function Wallet() {
               <li>✓ {t("perk_free_msg_1", lang)}</li>
               <li>✓ {t("perk_free_automatch_1", lang)}</li>
             </ul>
-            <Button data-testid="premium-subscribe-confirm" onClick={() => buy("premium_monthly")} className="rose-btn text-white border-0 w-full h-11">{t("buy_premium", lang)}</Button>
-            <Button data-testid="premium-buy-coins" onClick={() => buyCoins("premium")} variant="outline" className="w-full bg-amber-500/10 border-amber-500/40 text-amber-200 h-10">🪙 {meta?.premium_coins || 300}</Button>
-            <p data-testid="premium-autorenew-note" className="text-[11px] text-slate-400 leading-snug">{t("premium_autorenew_note", lang)}</p>
+            <div className="mt-auto space-y-3 pt-2">
+              <Button data-testid="premium-subscribe-confirm" onClick={() => buy("premium_monthly")} className="rose-btn text-white border-0 w-full h-11">{t("buy_premium", lang)}</Button>
+              <Button data-testid="premium-buy-coins" onClick={() => buyCoins("premium")} variant="outline" className="w-full bg-amber-500/10 border-amber-500/40 text-amber-200 h-10">🪙 {meta?.premium_coins || 300}</Button>
+              <p data-testid="premium-autorenew-note" className="text-[11px] text-slate-400 leading-snug">{t("premium_autorenew_note", lang)}</p>
+            </div>
           </div>
-          <div className="glass rounded-xl p-5 text-center space-y-3 border border-rose-500/40 mt-3" data-testid="vip-purchase-card">
+          <div className="glass rounded-xl p-5 text-center space-y-3 border border-rose-500/40 flex flex-col" data-testid="vip-purchase-card">
             <Crown size={40} className="mx-auto text-rose-400 fill-rose-500"/>
             <div className="font-serif-luxe text-2xl gold-text">VIP · ${meta?.vip?.amount || 49.99}<span className="text-sm text-slate-400"> {t("per_month", lang)}</span></div>
             <ul className="text-sm text-slate-300 text-left space-y-1">
@@ -260,9 +265,12 @@ export default function Wallet() {
               <li>✓ {t("perk_free_automatch_3", lang)}</li>
               <li>✓ {t("perk_priority_support", lang)}</li>
             </ul>
-            <Button data-testid="vip-subscribe-confirm" onClick={() => buy("vip_monthly")} className="rose-btn text-white border-0 w-full h-11">VIP · ${meta?.vip?.amount || 49.99}</Button>
-            <Button data-testid="vip-buy-coins" onClick={() => buyCoins("vip")} variant="outline" className="w-full bg-rose-500/10 border-rose-500/40 text-rose-200 h-10">🪙 {meta?.vip_coins || 500}</Button>
-            <p className="text-[11px] text-slate-400 leading-snug">{t("vip_card_billing_note", lang)}</p>
+            <div className="mt-auto space-y-3 pt-2">
+              <Button data-testid="vip-subscribe-confirm" onClick={() => buy("vip_monthly")} className="rose-btn text-white border-0 w-full h-11">VIP · ${meta?.vip?.amount || 49.99}</Button>
+              <Button data-testid="vip-buy-coins" onClick={() => buyCoins("vip")} variant="outline" className="w-full bg-rose-500/10 border-rose-500/40 text-rose-200 h-10">🪙 {meta?.vip_coins || 500}</Button>
+              <p className="text-[11px] text-slate-400 leading-snug">{t("vip_card_billing_note", lang)}</p>
+            </div>
+          </div>
           </div>
         </DialogContent>
       </Dialog>
