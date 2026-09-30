@@ -8,7 +8,8 @@ import { api, fileUrl } from "../lib/api";
 import { useApp } from "../context/AppContext";
 import { t } from "../lib/i18n";
 import AddressPicker, { MapsLink } from "../components/AddressPicker";
-import LegacyDates from "./Dates";
+import DateBookingList from "../components/DateBookingList";
+import CancelledDates from "../components/CancelledDates";
 
 const FALLBACK = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&q=80";
 const TERMINAL = ["COMPLETED", "COMPLETED_AUTO", "CANCELLED", "CANCELLED_TRANSPORTATION", "REFUNDED"];
@@ -322,7 +323,6 @@ function DateCard({ d, reload }) {
 
 export default function InviteDates() {
   const { lang } = useApp();
-  const [tab, setTab] = useState("invites");
   const [data, setData] = useState({ incoming: [], outgoing: [] });
   const load = useCallback(async () => { try { const r = await api.get("/invites"); setData(r.data); } catch {} }, []);
   useEffect(() => { load(); const id = setInterval(load, 20000); return () => clearInterval(id); }, [load]);
@@ -330,29 +330,29 @@ export default function InviteDates() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="font-serif-luxe text-3xl mb-4 flex items-center gap-2"><CalendarHeart className="text-rose-400" /> {t("dates", lang)}</h1>
-      <div className="flex gap-2 mb-5">
-        <button data-testid="tab-invites" onClick={() => setTab("invites")} className={`text-sm px-4 py-2 rounded-full border ${tab === "invites" ? "bg-rose-500/20 border-rose-500/50 text-rose-200" : "bg-white/5 border-white/10 text-slate-300"}`}>{t("id_tab_invitations", lang)}</button>
-        <button data-testid="tab-vip" onClick={() => setTab("vip")} className={`text-sm px-4 py-2 rounded-full border ${tab === "vip" ? "bg-amber-500/20 border-amber-500/50 text-amber-200" : "bg-white/5 border-white/10 text-slate-300"}`}>{t("id_tab_vip", lang)}</button>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <section data-testid="incoming-dates">
+          <h2 className="text-lg font-semibold mb-3 text-slate-200">{t("id_incoming", lang)}</h2>
+          <div className="space-y-3">
+            {data.incoming.map(d => <DateCard key={d.id} d={d} reload={load} />)}
+            {!data.incoming.length && <p className="text-sm text-slate-500">{t("id_no_incoming", lang)}</p>}
+          </div>
+        </section>
+        <section data-testid="outgoing-dates">
+          <h2 className="text-lg font-semibold mb-3 text-slate-200">{t("id_outgoing", lang)}</h2>
+          <div className="space-y-3">
+            {data.outgoing.map(d => <DateCard key={d.id} d={d} reload={load} />)}
+            {!data.outgoing.length && <p className="text-sm text-slate-500">{t("id_no_outgoing", lang)}</p>}
+          </div>
+        </section>
       </div>
 
-      {tab === "vip" ? <LegacyDates embedded /> : (
-        <div className="grid md:grid-cols-2 gap-6">
-          <section data-testid="incoming-dates">
-            <h2 className="text-lg font-semibold mb-3 text-slate-200">{t("id_incoming", lang)}</h2>
-            <div className="space-y-3">
-              {data.incoming.map(d => <DateCard key={d.id} d={d} reload={load} />)}
-              {!data.incoming.length && <p className="text-sm text-slate-500">{t("id_no_incoming", lang)}</p>}
-            </div>
-          </section>
-          <section data-testid="outgoing-dates">
-            <h2 className="text-lg font-semibold mb-3 text-slate-200">{t("id_outgoing", lang)}</h2>
-            <div className="space-y-3">
-              {data.outgoing.map(d => <DateCard key={d.id} d={d} reload={load} />)}
-              {!data.outgoing.length && <p className="text-sm text-slate-500">{t("id_no_outgoing", lang)}</p>}
-            </div>
-          </section>
-        </div>
-      )}
+      <div className="mt-10">
+        <DateBookingList mode="regular" />
+      </div>
+
+      <CancelledDates />
     </div>
   );
 }
